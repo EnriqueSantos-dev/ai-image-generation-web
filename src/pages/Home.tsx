@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader, FormField, Card } from "~/components";
 import { useQuery } from "@tanstack/react-query";
 import { getAllPosts } from "~/services/get-all-post";
