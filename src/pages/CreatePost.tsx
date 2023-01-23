@@ -1,4 +1,4 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import { useGenerateImage } from "~/hooks";
 import { useMutation } from "@tanstack/react-query";
 import { createNewPost } from "~/services";
 import { queryClient } from "~/lib";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -59,9 +60,7 @@ export function CreatePost() {
   }
 
   async function handleGenerateImage() {
-    await handleCreateImage(getValues("prompt"));
-
-    if (dataImg?.photo) setValue("photo", dataImg?.photo);
+    handleCreateImage(getValues("prompt"));
   }
 
   const submitHandler: SubmitHandler<IFormValues> = (data) => {
@@ -77,6 +76,12 @@ export function CreatePost() {
       photo: dataImg.photo,
     });
   };
+
+  useEffect(() => {
+    if (dataImg?.photo) {
+      setValue("photo", dataImg?.photo);
+    }
+  }, [dataImg?.photo]);
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -127,7 +132,7 @@ export function CreatePost() {
                   alt={getValues("prompt")}
                   className="w-full h-full object-contain rounded-lg"
                 />
-                <FormField {...register("photo")} hiddenInput />
+                <FormField type="text" {...register("photo")} hiddenInput />
               </>
             ) : (
               <img
